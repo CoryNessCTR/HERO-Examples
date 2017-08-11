@@ -2,18 +2,21 @@
 using System.Threading;
 using Microsoft.SPOT;
 using System.Text;
+using CTRE.MotorControllers;
 
 namespace HERO_Mecanum_Drive_Example
 {
     public class Program
     {
         /* create a talon */
-        static CTRE.TalonSrx leftFrnt = new CTRE.TalonSrx(4);
-        static CTRE.TalonSrx leftRear = new CTRE.TalonSrx(3);
-        static CTRE.TalonSrx rghtFrnt = new CTRE.TalonSrx(2);
-        static CTRE.TalonSrx rghtRear = new CTRE.TalonSrx(1);
+        static TalonSrx leftFrnt = new TalonSrx(4);
+        static TalonSrx leftRear = new TalonSrx(3);
+        static TalonSrx rghtFrnt = new TalonSrx(2);
+        static TalonSrx rghtRear = new TalonSrx(1);
 
-        static CTRE.Gamepad _gamepad = null;
+        static CTRE.Controller.GameController _gamepad = null;
+
+        static CTRE.Drive.Mecanum drive = new CTRE.Drive.Mecanum(leftFrnt, leftRear, rghtFrnt, rghtRear);
 
         public static void Main()
         {
@@ -71,7 +74,7 @@ namespace HERO_Mecanum_Drive_Example
         static void Drive()
         {
             if (null == _gamepad)
-                _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+                _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
             float x = _gamepad.GetAxis(0);      // Positive is strafe-right, negative is strafe-left
             float y = -1 * _gamepad.GetAxis(1); // Positive is forward, negative is reverse
@@ -81,27 +84,7 @@ namespace HERO_Mecanum_Drive_Example
             Deadband(ref y);
             Deadband(ref turn);
 
-            float leftFrnt_throt = y + x + turn; // left front moves positive for forward, strafe-right, turn-right
-            float leftRear_throt = y - x + turn; // left rear moves positive for forward, strafe-left, turn-right
-            float rghtFrnt_throt = y - x - turn; // right front moves positive for forward, strafe-left, turn-left
-            float rghtRear_throt = y + x - turn; // right rear moves positive for forward, strafe-right, turn-left
-
-            /* normalize here, there a many way to accomplish this, this is a simple solution */
-            Normalize(ref leftFrnt_throt);
-            Normalize(ref leftRear_throt);
-            Normalize(ref rghtFrnt_throt);
-            Normalize(ref rghtRear_throt);
-
-            /* everything up until this point assumes positive spins motor so that robot moves forward.
-                But typically one side of the robot has to drive negative (red LED) to move robor forward.
-                Assuming the left-side has to be negative to move robot forward, flip the left side */
-            leftFrnt_throt *= -1;
-            leftRear_throt *= -1;
-
-            leftFrnt.Set(leftFrnt_throt);
-            leftRear.Set(leftRear_throt);
-            rghtFrnt.Set(rghtFrnt_throt);
-            rghtRear.Set(rghtRear_throt);
+            drive.Set(CTRE.Drive.Styles.Basic.PercentOutput, y, x, turn);
         }
     }
 }

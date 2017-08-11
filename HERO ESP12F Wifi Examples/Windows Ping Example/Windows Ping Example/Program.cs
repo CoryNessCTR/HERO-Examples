@@ -20,7 +20,7 @@ namespace Windows_Ping_Example
     {
         const string mode = "UDP";
 
-        static byte[] toSend = new byte[64];
+        static byte[] toSend = new byte[200];
         static byte[] receivedData = new byte[64];
 
         static long startTicks = 0;
@@ -64,6 +64,7 @@ namespace Windows_Ping_Example
 
             while (true)
             {
+                System.Threading.Thread.Sleep(20);
 
                 if (!sent)
                 {
@@ -71,9 +72,13 @@ namespace Windows_Ping_Example
                     populate(toSend, count);
                     sent = true;
                     startTicks = DateTime.Now.Ticks;
+                    try
+                    {
 #if (UDP)
-                    udpClient.Send(toSend, toSend.Length);
+                        udpClient.Send(toSend, toSend.Length);
 #endif
+                    }
+                    catch (Exception e) { }
 #if(TCP)
                     stream.Write(toSend, 0, toSend.Length);
 #endif
@@ -84,7 +89,7 @@ namespace Windows_Ping_Example
                     try
                     {
 #if (UDP)
-                        byte[] receivedData = udpClient.Receive(ref server);
+                        byte[] receivedData = null;//udpClient.Receive(ref server);
 #endif
 #if(TCP)
                         int bytes = stream.Read(receivedData, 0, receivedData.Length);
@@ -92,13 +97,13 @@ namespace Windows_Ping_Example
 
                         endTicks = DateTime.Now.Ticks;
 
-                        if (receivedData.SequenceEqual(toSend))
+                        if (/*receivedData.SequenceEqual(toSend)*/ true)
                         {
                             pingTime = (int)((endTicks - startTicks) / kTicksMs);
 
                             successCount++;
 
-                            Console.Out.Write(receivedData[0] + ": " + pingTime + " ms |   " + successCount + " Received,  " + timedOutCount + " Timed Out,  " + lostCount + " Lost.\r\n");
+                            //Console.Out.Write(receivedData[0] + ": " + pingTime + " ms |   " + successCount + " Received,  " + timedOutCount + " Timed Out,  " + lostCount + " Lost.\r\n");
 
                             received = true;
                         }

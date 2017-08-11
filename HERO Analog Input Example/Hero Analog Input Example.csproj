@@ -36,10 +36,7 @@
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CTRE">
-      <SpecificVersion>False</SpecificVersion>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="CTRE, Version=4.4.0.23, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="ctre_netmf_native">
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>

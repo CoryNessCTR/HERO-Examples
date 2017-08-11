@@ -31,7 +31,7 @@ namespace HERO_Driver_Module_Example
         public static void Main()
         {
             //Gamepad for input
-            CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+            CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
             //Create the DriverModule object by giving it the port you plugged it in to.
             CTRE.HERO.Module.DriverModule driver = new CTRE.HERO.Module.DriverModule(CTRE.HERO.IO.Port5);

@@ -84,10 +84,10 @@ namespace DisplayModule_Example
                 if (_left < 0) _left = 0;
                 _rght = _width - _left;
 
-                _leftRect.SetPosition(_x + 1, _y + 1);
+                _leftRect.MoveRepaint(new byte[] { (byte)(_x + 1), (byte)(_y + 1) });
                 _leftRect.SetSize(_left + 1, _height);
 
-                _rghtRect.SetPosition(_x + 1 + _left + 1, _y + 1);
+                _rghtRect.MoveRepaint(new byte[] { (byte)(_x + 1 + _left + 1), (byte)(_y + 1) });
                 _rghtRect.SetSize(_rght + 1, _height);
 
                 _leftRect.EndUpdate();

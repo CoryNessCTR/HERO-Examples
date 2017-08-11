@@ -8,6 +8,7 @@ using System;
 using System.Threading;
 using Microsoft.SPOT;
 using System.Text;
+using CTRE.MotorControllers;
 
 namespace Hero_Motion_Profile_Example
 {
@@ -28,21 +29,21 @@ namespace Hero_Motion_Profile_Example
      */
     public class RobotApplication
     {
-        CTRE.TalonSrx _talon = new CTRE.TalonSrx(6);
-        CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        TalonSrx _talon = new TalonSrx(6);
+        CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
         bool[] _btns = new bool[10];
         bool[] _btnsLast = new bool[10];
         StringBuilder _sb = new StringBuilder();
         int _timeToPrint = 0;
         int _timeToColumns= 0;
 
-        CTRE.TalonSrx.MotionProfileStatus _motionProfileStatus = new CTRE.TalonSrx.MotionProfileStatus();
+        TalonSrx.MotionProfileStatus _motionProfileStatus = new TalonSrx.MotionProfileStatus();
 
         public void Run()
         {
-            _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kVoltage);
+            _talon.SetControlMode(ControlMode.kVoltage);
 
-            _talon.SetFeedbackDevice(CTRE.TalonSrx.FeedbackDevice.CtreMagEncoder_Relative);
+            _talon.SetFeedbackDevice(TalonSrx.FeedbackDevice.CtreMagEncoder_Relative);
             _talon.SetSensorDirection(false);
 
             _talon.SetVoltageRampRate(0.0f);
@@ -107,12 +108,12 @@ namespace Hero_Motion_Profile_Example
             if (_btns[5] && !_btnsLast[5])
             {
                 /* disable MP to clear IsLast */
-                _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kMotionProfile);
+                _talon.SetControlMode(ControlMode.kMotionProfile);
                 _talon.Set(0);
                 CTRE.Watchdog.Feed();
                 Thread.Sleep(10);
                 /* buffer new pts in HERO */
-                CTRE.TalonSrx.TrajectoryPoint point = new CTRE.TalonSrx.TrajectoryPoint();
+                TalonSrx.TrajectoryPoint point = new TalonSrx.TrajectoryPoint();
                 _talon.ClearMotionProfileHasUnderrun();
                 _talon.ClearMotionProfileTrajectories();
                 for (uint i = 0; i < MotionProfile.kNumPoints; ++i)
@@ -138,11 +139,11 @@ namespace Hero_Motion_Profile_Example
             }
             else if (_btns[7] && !_btnsLast[7])
             {
-                _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kVoltage);
+                _talon.SetControlMode(ControlMode.kVoltage);
             }
 
             /* if in voltage mode, update output voltage */
-            if (_talon.GetControlMode() == CTRE.TalonSrx.ControlMode.kVoltage)
+            if (_talon.GetControlMode() == ControlMode.kVoltage)
             {
                 _talon.Set(14.0f * y);
             }

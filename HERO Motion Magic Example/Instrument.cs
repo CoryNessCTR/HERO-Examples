@@ -21,7 +21,7 @@ namespace HERO_Motion_Magic_Example
         {
             Debug.Print("Initialization failed, will try again...");
         }
-        public static void Process(CTRE.TalonSrx talon)
+        public static void Process(CTRE.MotorControllers.TalonSrx talon)
         {
             /* simple timeout to reduce printed lines */
             if (++_instrumLoops1 > 10)

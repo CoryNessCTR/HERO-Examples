@@ -7,17 +7,18 @@
 using System.Text;
 using System.Threading;
 using Microsoft.SPOT;
+using CTRE.MotorControllers;
 
 namespace HERO_Current_Limit_Example
 {
     public class Program
     {
         /* create a talon */
-        static CTRE.TalonSrx talon = new CTRE.TalonSrx(0);
+        static TalonSrx talon = new TalonSrx(0);
 
         static StringBuilder stringBuilder = new StringBuilder();
 
-        static CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        static CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0),0);
 
         public static void Main()
         {

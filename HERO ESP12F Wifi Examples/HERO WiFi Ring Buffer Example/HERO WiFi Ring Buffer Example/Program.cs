@@ -25,7 +25,7 @@ namespace HERO_WiFi_Ring_Buffer_Example
     public class Program
     {
         /** WiFi object, this is constructed on the HERO Gadgeteer Port. */
-        static ESP12F wifi;
+        static WiFiESP12F wifi;
         /** Ring buffer holding the bytes to transmit. */
         static byte[] _tx = new byte[1024];
         static int _txIn = 0;
@@ -78,12 +78,13 @@ namespace HERO_WiFi_Ring_Buffer_Example
         /** entry point of the application */
         public static void Main()
         {
-            wifi = new ESP12F(IO.Port1);
+            wifi = new WiFiESP12F(IO.Port4);
             wifi.reset();
             Thread.Sleep(1000);
-            wifi.setWifiMode(ESP12F.wifiMode.SOFTAP);
-            wifi.setAP("WifiTest", "Password1", 1, ESP12F.SecurityType.WPA_WPA2_PSK);
-
+            wifi.setWifiMode(WiFiESP12F.wifiMode.SOFTAP);
+            Thread.Sleep(1000);
+            wifi.setAP("WifiTest", "Password1", 1, WiFiESP12F.SecurityType.WPA_WPA2_PSK);
+            Thread.Sleep(1000);
 #if (UDP)
             wifi.startUDP(4, "192.168.4.2", 11000, 11001);
 #endif
@@ -114,7 +115,7 @@ namespace HERO_WiFi_Ring_Buffer_Example
                 }
 
                 /* if there are bufferd bytes echo them back out */
-                if (wifi.uart.CanWrite && (_txCnt > 0))
+                if (_txCnt > 0)
                 {
                     scratch = new byte[_txCnt];
                     PopTX(scratch);

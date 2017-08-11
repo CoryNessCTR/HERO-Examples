@@ -14,7 +14,7 @@ namespace HERO_Example
     public class Program
     {
         /* the goal is to plug in a Xinput Logitech Gamepad or Xbox360 style controller */
-        CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
         struct ButtonPress{ public bool now; public bool last; public bool WasPressed() { return now && !last; }  }
         

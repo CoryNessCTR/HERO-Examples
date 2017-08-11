@@ -12,15 +12,16 @@
 using System;
 using Microsoft.SPOT;
 using System.Text;
+using CTRE.MotorControllers;
 
 namespace HERO_XInput_Gampad_Example
 {
     public class Program
     {
         /* the goal is to plug in a Xinput Logitech Gamepad or Xbox360 style controller */
-        CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        CTRE.Controller.Xbox360Gamepad _gamepad = new CTRE.Controller.Xbox360Gamepad(CTRE.UsbHostDevice.GetInstance(0), 0);
 
-        CTRE.TalonSrx _tal = new CTRE.TalonSrx(44);
+        TalonSrx _tal = new TalonSrx(44);
 
         /* Create the DriverModule to control some LEDs or solenoids */
         CTRE.HERO.Module.DriverModule _driver = new CTRE.HERO.Module.DriverModule(CTRE.HERO.IO.Port5);
@@ -39,7 +40,6 @@ namespace HERO_XInput_Gampad_Example
             /* enable XInput, if gamepad is in DInput it will disable robot.  This way you can
              * use X mode for drive, and D mode for disable (instead of vice versa as the 
              * stock HERO implementation traditionally does). */
-            CTRE.UsbHostDevice.EnableXInputDevices();
 
             while (true)
             {
@@ -66,10 +66,10 @@ namespace HERO_XInput_Gampad_Example
                 _tal.Set((_sticks[5] - _sticks[4]) * 0.60f);
 
                 /* fire some solenoids based on buttons */
-                _driver.Set(0, _buttons[1]);
-                _driver.Set(1, _buttons[2]);
-                _driver.Set(2, _buttons[3]);
-                _driver.Set(3, _buttons[4]);
+                _driver.Set(1, _buttons[1]);
+                _driver.Set(2, _buttons[2]);
+                _driver.Set(3, _buttons[3]);
+                _driver.Set(4, _buttons[4]);
 
                 /* rumble state machine */
                 switch (_rumblinSt)

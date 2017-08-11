@@ -21,6 +21,7 @@ using System;
 using System.Threading;
 using Microsoft.SPOT;
 using System.Text;
+using CTRE.MotorControllers;
 
 namespace Hero_Position_Servo_Example
 {
@@ -48,10 +49,10 @@ namespace Hero_Position_Servo_Example
         const uint kEnableButton = 7;
 
         /** make a talon with deviceId 0 */
-        CTRE.TalonSrx _talon = new CTRE.TalonSrx(0);
+        TalonSrx _talon = new TalonSrx(0);
 
         /** Use a USB gamepad plugged into the HERO */
-        CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
         /** hold the current button values from gamepad*/
         bool[] _btns = new bool[10];
@@ -70,7 +71,7 @@ namespace Hero_Position_Servo_Example
         public void Run()
         {
             /* first choose the sensor */
-            _talon.SetFeedbackDevice(CTRE.TalonSrx.FeedbackDevice.CtreMagEncoder_Relative);
+            _talon.SetFeedbackDevice(TalonSrx.FeedbackDevice.CtreMagEncoder_Relative);
             _talon.SetSensorDirection(false);
             //_talon.ConfigEncoderCodesPerRev(XXX), // if using CTRE.TalonSrx.FeedbackDevice.QuadEncoder
             //_talon.ConfigPotentiometerTurns(XXX), // if using CTRE.TalonSrx.FeedbackDevice.AnalogEncoder or CTRE.TalonSrx.FeedbackDevice.AnalogPot
@@ -121,7 +122,7 @@ namespace Hero_Position_Servo_Example
             _talon.SetPosition(0); /* start our position at zero, this example uses relative positions */
             _targetPosition = 0;
             /* zero throttle */
-            _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kPercentVbus);
+            _talon.SetControlMode(ControlMode.kPercentVbus);
             _talon.Set(0);
             Thread.Sleep(100); /* wait a bit to make sure the Setposition() above takes effect before sampling */
         }
@@ -129,7 +130,7 @@ namespace Hero_Position_Servo_Example
         {
             /* user has let go of the stick, lets closed-loop whereever we happen to be */
             _talon.SetVoltageRampRate(0); /* V per sec */
-            _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kPosition);
+            _talon.SetControlMode(ControlMode.kPosition);
             _talon.Set(_targetPosition);
         }
         void Loop10Ms()
@@ -149,10 +150,10 @@ namespace Hero_Position_Servo_Example
                 /* put in a ramp to prevent the user from flipping their mechanism */
                 _talon.SetVoltageRampRate(12.0f); /* V per sec */
                 /* directly control the output */
-                _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kPercentVbus);
+                _talon.SetControlMode(ControlMode.kPercentVbus);
                 _talon.Set(filteredY);
             }
-            else if (_talon.GetControlMode() == CTRE.TalonSrx.ControlMode.kPercentVbus)
+            else if (_talon.GetControlMode() == ControlMode.kPercentVbus)
             {
                 _targetPosition = _talon.GetPosition();
 

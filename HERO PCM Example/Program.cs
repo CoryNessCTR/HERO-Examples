@@ -11,7 +11,7 @@ namespace HERO_PCM_Example
         static CTRE.PneumaticControlModule _pcm = new CTRE.PneumaticControlModule(0);
 
         /** Use a USB gamepad plugged into the HERO */
-        static CTRE.Gamepad _gamepad = new CTRE.Gamepad(new CTRE.UsbHostDevice());
+        static CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(new CTRE.UsbHostDevice(0), 0);
 
         public static void Main()
         {

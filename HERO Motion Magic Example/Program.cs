@@ -21,17 +21,18 @@
 using System.Threading;
 using System;
 using Microsoft.SPOT;
+using CTRE.MotorControllers;
 
 namespace HERO_Motion_Magic_Example
 {
     public class Program
     {
         /** talon to control */
-        private CTRE.TalonSrx _talon = new CTRE.TalonSrx(0);
+        private TalonSrx _talon = new TalonSrx(0);
         /** desired mode to put talon in */
-        private CTRE.TalonSrx.ControlMode _mode = CTRE.TalonSrx.ControlMode.kPercentVbus;
+        private ControlMode _mode = ControlMode.kPercentVbus;
         /** attached gamepad to HERO, tested with Logitech F710 */
-        private CTRE.Gamepad _gamepad = new CTRE.Gamepad(new CTRE.UsbHostDevice());
+        private CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(new CTRE.UsbHostDevice(0), 0);
         /** constant slot to use */
         const uint kSlotIdx = 0;
         /** How long to wait for receipt when setting a param.  Many setters take an optional timeout that API will wait for.
@@ -47,12 +48,12 @@ namespace HERO_Motion_Magic_Example
             /* binary OR all the return values so we can make a quick decision if our init was successful */
             int status = 0; 
             /* specify sensor characteristics */
-            _talon.SetFeedbackDevice(CTRE.TalonSrx.FeedbackDevice.CtreMagEncoder_Relative);
+            _talon.SetFeedbackDevice(TalonSrx.FeedbackDevice.CtreMagEncoder_Relative);
             _talon.SetSensorDirection(false); /* make sure positive motor output means sensor moves in position direction */
             // call ConfigEncoderCodesPerRev or ConfigPotentiometerTurns for Quadrature or Analog sensor types.
 
             /* brake or coast during neutral */
-            status |= _talon.ConfigNeutralMode(CTRE.TalonSrx.NeutralMode.Brake);
+            status |= _talon.ConfigNeutralMode(TalonSrx.NeutralMode.Brake);
 
             /* closed-loop and motion-magic parameters */
             status |= _talon.SetF(kSlotIdx, 0.1153f, kTimeoutMs); // 1300RPM (8874 native sensor units per 100ms) at full motor output (+1023)
@@ -99,18 +100,18 @@ namespace HERO_Motion_Magic_Example
 
                 /* set the control mode based on button pressed */
                 if (btnTopLeftShoulder)
-                    _mode = CTRE.TalonSrx.ControlMode.kPercentVbus;
+                    _mode = ControlMode.kPercentVbus;
                 if (btnBtmLeftShoulder)
-                    _mode = CTRE.TalonSrx.ControlMode.kMotionMagic;
+                    _mode = ControlMode.kMotionMagic;
 
                 /* calc the Talon output based on mode */
-                if (_mode == CTRE.TalonSrx.ControlMode.kPercentVbus)
+                if (_mode == ControlMode.kPercentVbus)
                 {
                     float output = leftY; // [-1, +1] percent duty cycle
                     _talon.SetControlMode(_mode);
                     _talon.Set(output);
                 }
-                else if (_mode == CTRE.TalonSrx.ControlMode.kMotionMagic)
+                else if (_mode == ControlMode.kMotionMagic)
                 {
                     float servoToRotation = leftY * 10;// [-10, +10] rotations
                     _talon.SetControlMode(_mode);

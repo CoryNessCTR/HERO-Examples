@@ -85,10 +85,10 @@ namespace DisplayModule_Example
                 if (_top < 0) _top = 0;
                 _btm = _height - _top;
 
-                _topRect.SetPosition(_x + 1, _y + 1);
+                _topRect.MoveRepaint(new byte[] { (byte)(_x + 1), (byte)(_y + 1) });
                 _topRect.SetSize(_width, _top + 1 );
 
-                _btmRect.SetPosition(_x + 1, _y + 1 + _top + 1);
+                _btmRect.MoveRepaint(new byte[] { (byte)(_x + 1), (byte)(_y + 1 + _top + 1) });
                 _btmRect.SetSize(_width, _btm + 1 );
 
                 _topRect.EndUpdate();

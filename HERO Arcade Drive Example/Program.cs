@@ -2,20 +2,26 @@
 using System.Threading;
 using Microsoft.SPOT;
 using System.Text;
+using CTRE.MotorControllers;
 
 namespace Hero_Arcade_Drive_Example
 {
     public class Program
     {
         /* create a talon */
-        static CTRE.TalonSrx rightSlave = new CTRE.TalonSrx(4);
-        static CTRE.TalonSrx right = new CTRE.TalonSrx(3);
-        static CTRE.TalonSrx leftSlave = new CTRE.TalonSrx(2);
-        static CTRE.TalonSrx left = new CTRE.TalonSrx(1);
+        static TalonSrx rightSlave = new TalonSrx(4);
+        static TalonSrx right = new TalonSrx(3);
+        static TalonSrx leftSlave = new TalonSrx(2);
+        static TalonSrx left = new TalonSrx(1);
 
         static StringBuilder stringBuilder = new StringBuilder();
 
-        static CTRE.Gamepad _gamepad = null;
+        static CTRE.Mechanical.Gearbox leftG = new CTRE.Mechanical.Gearbox(left, leftSlave);
+        static CTRE.Mechanical.Gearbox rightG = new CTRE.Mechanical.Gearbox(right, rightSlave);
+
+        static CTRE.Drive.Tank drive = new CTRE.Drive.Tank(leftG, rightG, false, true);
+
+        static CTRE.Controller.GameController _gamepad = null;
 
         public static void Main()
         {
@@ -56,7 +62,7 @@ namespace Hero_Arcade_Drive_Example
         static void Drive()
         {
             if (null == _gamepad)
-                _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+                _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
             float x = _gamepad.GetAxis(0);
             float y = -1 * _gamepad.GetAxis(1);
@@ -66,21 +72,7 @@ namespace Hero_Arcade_Drive_Example
             Deadband(ref y);
             Deadband(ref twist);
 
-            float leftThrot = y + twist;
-            float rightThrot = y - twist;
-
-            left.Set(leftThrot);
-            leftSlave.Set(leftThrot);
-            right.Set(-rightThrot);
-            rightSlave.Set(-rightThrot);
-
-            stringBuilder.Append("\t");
-            stringBuilder.Append(x);
-            stringBuilder.Append("\t");
-            stringBuilder.Append(y);
-            stringBuilder.Append("\t");
-            stringBuilder.Append(twist);
-
+            drive.Set(CTRE.Drive.Styles.Basic.PercentOutput, y, twist);
         }
     }
 }

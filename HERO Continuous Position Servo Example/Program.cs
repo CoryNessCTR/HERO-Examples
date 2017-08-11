@@ -27,6 +27,7 @@ using Microsoft.SPOT;
 using CTRE;
 using System.Threading;
 using System.Text;
+using CTRE.MotorControllers;
 
 namespace HERO_Continuous_Position_Servo_Example
 {
@@ -56,10 +57,10 @@ namespace HERO_Continuous_Position_Servo_Example
         const uint kEnableButton = 7;
 
         /** make a talon with deviceId 0 */
-        CTRE.TalonSrx _talon = new CTRE.TalonSrx(0);
+        TalonSrx _talon = new TalonSrx(0);
 
         /** Use a USB gamepad plugged into the HERO */
-        CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
         /** hold the current button values from gamepad*/
         bool[] _btns = new bool[10];
@@ -83,7 +84,7 @@ namespace HERO_Continuous_Position_Servo_Example
         public void init()
         {
             /* first choose the sensor */
-            _talon.SetFeedbackDevice(CTRE.TalonSrx.FeedbackDevice.CtreMagEncoder_Absolute);
+            _talon.SetFeedbackDevice(TalonSrx.FeedbackDevice.CtreMagEncoder_Absolute);
             _talon.SetSensorDirection(false);
 
             /* set closed loop gains in slot0 */
@@ -134,10 +135,10 @@ namespace HERO_Continuous_Position_Servo_Example
 
             if(rightAxisX != 0)
             {
-                _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kPercentVbus);
+                _talon.SetControlMode(ControlMode.kPercentVbus);
                 _talon.Set(rightAxisX);
             }
-            else if (_talon.GetControlMode() == CTRE.TalonSrx.ControlMode.kPercentVbus)
+            else if (_talon.GetControlMode() == ControlMode.kPercentVbus)
             {
                 _targetPosition = _talon.GetPosition();
 
@@ -158,7 +159,7 @@ namespace HERO_Continuous_Position_Servo_Example
         {
             /* Make sure we're in closed-loop mode and update the target position */
             _talon.SetVoltageRampRate(0); /* V per sec */
-            _talon.SetControlMode(CTRE.TalonSrx.ControlMode.kPosition);
+            _talon.SetControlMode(ControlMode.kPosition);
             _talon.Set(_targetPosition);
         }
 		/**

@@ -32,7 +32,7 @@ namespace DisplayModule_Example
 {
     public class Program
     {
-        CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+        CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
         DisplayModule _displayModule = new DisplayModule(CTRE.HERO.IO.Port8, DisplayModule.OrientationType.Landscape);
 
@@ -58,7 +58,7 @@ namespace DisplayModule_Example
             axis *= 0.5f; // [0,1]
             gauge.Value = (int)(axis * gauge.MaxValue);
         }
-        public int GetFirstButton(CTRE.Gamepad gamepad)
+        public int GetFirstButton(CTRE.Controller.GameController gamepad)
         {
             for (uint i = 0; i < 16 ;++i)
             {
@@ -100,8 +100,8 @@ namespace DisplayModule_Example
                 UpdateGauge(_rightX, _gamepad.GetAxis(2));
                 UpdateGauge(_rightY, _gamepad.GetAxis(5));
 
-                _leftCrossHair.SetPosition((int)(30 + 15 * _gamepad.GetAxis(0)), 100 + (int)(15 * _gamepad.GetAxis(1)));
-                _rightCrossHair.SetPosition((int)(100 + 15 * _gamepad.GetAxis(2)), 100 + (int)(15 * _gamepad.GetAxis(5)));
+                _leftCrossHair.MoveRepaint(new byte[] { (byte)(30 + 15 * _gamepad.GetAxis(0)), (byte)(100 + (15 * _gamepad.GetAxis(1))) });
+                _rightCrossHair.MoveRepaint(new byte[] { (byte)(100 + 15 * _gamepad.GetAxis(2)), (byte)(100 + (int)(15 * _gamepad.GetAxis(5))) });
 
                 if (_gamepad.GetConnectionStatus() == CTRE.UsbDeviceConnection.Connected)
                 {

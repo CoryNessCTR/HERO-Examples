@@ -3,6 +3,8 @@ using System.Threading;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
 using CTRE;
+using CTRE.MotorControllers;
+using CTRE.Controller;
 
 /*
  * This example allows you to test basic limit
@@ -18,7 +20,7 @@ namespace HERO_Limit_Switch_Example
         public static void Main()
         {
             TalonSrx test = new TalonSrx(0);
-            Gamepad stick = new Gamepad(UsbHostDevice.GetInstance());
+            GameController stick = new GameController(UsbHostDevice.GetInstance(0), 0);
 
             /* loop forever */
             while (true)

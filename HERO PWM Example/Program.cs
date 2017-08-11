@@ -27,6 +27,7 @@
  */
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
+using CTRE.MotorControllers;
 
 namespace HERO_PWM_Example
 {
@@ -35,7 +36,7 @@ namespace HERO_PWM_Example
         public static void Main()
         {
             //Gamepad for input
-            CTRE.Gamepad _gamepad = new CTRE.Gamepad(CTRE.UsbHostDevice.GetInstance());
+            CTRE.Controller.GameController _gamepad = new CTRE.Controller.GameController(CTRE.UsbHostDevice.GetInstance(0), 0);
 
             //simple PWM for fine control of pulse width, period, timing...
             uint period = 50000; //period between pulses
@@ -44,7 +45,7 @@ namespace HERO_PWM_Example
             pwm_9.Start(); //starts the signal
 
             // ...and just a PWM SpeedController for motor controller (Victor SP, Talon SR, Victor 888, etc.)...
-            CTRE.PWMSpeedController pwmSpeedController = new CTRE.PWMSpeedController(CTRE.HERO.IO.Port3.PWM_Pin4);
+            PWMSpeedController pwmSpeedController = new PWMSpeedController(CTRE.HERO.IO.Port3.PWM_Pin4);
 
             while (true)
             {
